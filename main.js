@@ -1,22 +1,23 @@
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
+console.log("Hello world!");
 
-var app = http.createServer(function(request,response){
-    var _url = request.url;
-    var queryData = url.parse(request.url, true).query;
-    var title = queryData.id
-    console.log(_url);
-    if(_url == '/'){
-      title = 'Welcome';
-    }
-    if(_url == '/favicon.ico'){
+var app = http.createServer(function (request, response) {
+  var _url = request.url;
+  var queryData = url.parse(request.url, true).query;
+  var title = queryData.id
+  console.log(_url);
+  if (_url == '/') {
+    title = 'Welcome';
+  }
+  if (_url == '/favicon.ico') {
     response.writeHead(404);
     response.end();
     return;
-    }
-    response.writeHead(200);
-    var template = `<!doctype html>
+  }
+  response.writeHead(200);
+  var template = `<!doctype html>
     <html>
     <head>
       <title>WEB1 - ${title}</title>
@@ -37,7 +38,7 @@ var app = http.createServer(function(request,response){
     </body>
     </html>
     `;
-    response.end(template);
- 
+  response.end(template);
+
 });
 app.listen(3000);
