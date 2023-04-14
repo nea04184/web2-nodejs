@@ -1,22 +1,18 @@
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
-console.log("Hello world!");
+console.log("Hello 혤로world!");
 
 var app = http.createServer(function (request, response) {
   var _url = request.url;
   var queryData = url.parse(request.url, true).query;
-  var title = queryData.id
-  console.log(_url);
-  if (_url == '/') {
-    title = 'Welcome';
-  }
-  if (_url == '/favicon.ico') {
-    response.writeHead(404);
-    response.end();
-    return;
-  }
-  response.writeHead(200);
+  var title = queryData.id;
+
+  
+
+
+
+  
   fs.readFile(`data/${queryData.id}`, 'utf8', function (err, description) {
     var template = `<!doctype html>
     <html>
@@ -36,6 +32,7 @@ var app = http.createServer(function (request, response) {
     </body>
     </html>
     `;
+    response.writeHead(200);
     response.end(template);
   });
 });
