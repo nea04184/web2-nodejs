@@ -77,7 +77,7 @@ var app = http.createServer(function (request, response) {
         templateList(filelist),
         `
         <form action="/create_process" method="post">
-        <p></p><input type="text" name="title" placeholder="title"></p>
+        <p><input type="text" name="title" placeholder="title"></p>
         <p>
         <textarea name="description" placeholder="description"></textarea>
         </p>
@@ -105,22 +105,22 @@ var app = http.createServer(function (request, response) {
         response.end();
       });
     });
-  } else if (pathname === "/update") {
-    fs.readdir("./data", function (error, filelist) {
-      fs.readFile(`data/${queryData.id}`, "utf8", function (err, description) {
-        var template = templateHTML(
-          title,
-          templateList(filelist),
+  } else if(pathname === '/update'){
+    fs.readdir('./data', function(error, filelist){
+      fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description){
+        var title = queryData.id;
+        var template = templateHTML(title, templateList(filelist),
           `
           <form action="/update_process" method="post">
-          <input type="hidden" name="id" value="${title}">
-          <p></p><input type="text" name="title" placeholder="title" value=${title}></p>
-          <p>
-          <textarea name="description" placeholder="description">${description}</textarea>
-          </p>
-          <p><input type ="submit">
-          </p>
-           </form>
+            <input type="hidden" name="id" value="${title}">
+            <p><input type="text" name="title" placeholder="title" value="${title}"></p>
+            <p>
+              <textarea name="description" placeholder="description">${description}</textarea>
+            </p>
+            <p>
+              <input type="submit">
+            </p>
+          </form>
           `,
           `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`
         );
@@ -128,7 +128,30 @@ var app = http.createServer(function (request, response) {
         response.end(template);
       });
     });
-  } else {
+  } else if (pathname === '/update_process')
+  {
+    var body = "";
+    request.on("data", function (data) {
+      body += data; // body데이터에 data의 값을 추가해준다.
+    });
+    request.on("end", function () {
+      var post = qs.parse(body);
+      var id = post.id;
+      var title = post.title;
+      var description = post.description;
+      fs.rename(`data/${id}`, `data/${title}`, function(err){
+        fs.writeFile(`data/${title}`, description, "utf8", function (err) {
+          response.writeHead(302, { location: `/?id=${title}` });
+          response.end();
+        });
+      })
+      console.log(post);
+      /*
+
+      */
+    });
+  }
+   else {
     response.writeHead(404);
     response.end("Not found");
   }
